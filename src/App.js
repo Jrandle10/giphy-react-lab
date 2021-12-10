@@ -1,22 +1,36 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import Form from './Form';
+import GiphyInfo from './GiphyInfo';
+
 
 function App() {
+  const [giphyData, setGiphyData] = useState('');
+  const [giphyTitle, setGiphyTitle] = useState('')
+
+  const handleSubmit = title => {
+    setGiphyTitle(title)
+  };
+
+  useEffect(() => {
+    let giphyUrl = `https://api.giphy.com/v1/gifs/random?api_key=dnAsu8jjwPPH9fDyaOPO69pAe8yYGyQz&tag=${giphyTitle}&apikey=dnAsu8jjwPPH9fDyaOPO69pAe8yYGyQz`;
+  
+
+    const makeApiCall = () => {
+      fetch(giphyUrl)
+      .then(res => res.json())
+      .then(data => {
+        setGiphyData(data)
+      })
+    }
+    makeApiCall()
+  }, [giphyTitle])
+  
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Form handleSubmit={ handleSubmit }/>
+        {giphyData.data ? <GiphyInfo giphy={giphyData} /> : null }
       </header>
     </div>
   );
